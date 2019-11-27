@@ -20,7 +20,7 @@ export default class ProductDetailsScreen extends Component {
   }
 
   componentDidMount() {
-    this._subscribe = this.props.navigation.addListener('didFocus', () => {
+    this.props.navigation.addListener('didFocus', () => {
       const { navigation } = this.props;
       db.productById(navigation.getParam('prodId')).then((data) => {
         console.log(data);
@@ -47,7 +47,7 @@ export default class ProductDetailsScreen extends Component {
     });
     db.deleteProduct(id).then((result) => {
       console.log(result);
-      this.props.navigation.goBack();
+      navigation.goBack();
     }).catch((err) => {
       console.log(err);
       this.setState = {

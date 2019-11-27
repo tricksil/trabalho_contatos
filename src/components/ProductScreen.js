@@ -36,7 +36,9 @@ export default class ProductScreen extends Component {
 	keyExtractor = (item, index) => index.toString();
 
 	componentDidMount() {
-		this.getProducts();
+		this.props.navigation.addListener('didFocus', () => {
+			this.getProducts();
+		});
 	}
 
 	getProducts() {

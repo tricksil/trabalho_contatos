@@ -5,35 +5,35 @@ import Database from '../../Database';
 
 const db = new Database();
 
-export default class ProductAddScreen extends Component {
+export default class ContactAddScreen extends Component {
   static navigationOptions = {
-    title: 'Add Product',
+    title: 'Adicionar Contatos',
   };
 
   constructor() {
     super();
     this.state = {
-      prodId: '',
-      prodName: '',
-      prodDesc: '',
-      prodImage: '',
-      prodPrice: '0',
+      contId: '',
+      contName: '',
+      contDesc: '',
+      contImage: '',
+      contNum: '',
       isLoading: false,
     };
   }
 
-  saveProduct() {
+  saveContact() {
     this.setState({
       isLoading: true,
     });
     let data = {
-      prodId: this.state.prodId,
-      prodName: this.state.prodName,
-      prodDesc: this.state.prodDesc,
-      prodImage: this.state.prodImage,
-      prodPrice: this.state.prodPrice
+      contId: this.state.contId,
+      contName: this.state.contName,
+      contDesc: this.state.contDesc,
+      contImage: this.state.contImage,
+      contNum: this.state.contNum
     }
-    db.addProduct(data).then((result) => {
+    db.addContact(data).then((result) => {
       console.log(result);
       this.setState({
         isLoading: false,
@@ -55,10 +55,10 @@ export default class ProductAddScreen extends Component {
   }
 
   render() {
-    if(this.state.isLoading){
-      return(
+    if (this.state.isLoading) {
+      return (
         <View style={styles.activity}>
-          <ActivityIndicator size="large" color="#0000ff"/>
+          <ActivityIndicator size="large" color="#0000ff" />
         </View>
       )
     }
@@ -66,49 +66,50 @@ export default class ProductAddScreen extends Component {
       <ScrollView style={styles.container}>
         <View style={styles.subContainer}>
           <TextInput
-              placeholder={'Product ID'}
-              value={this.state.prodId}
-              onChangeText={(text) => this.updateTextInput(text, 'prodId')}
+            placeholder={'ID do Contato'}
+            value={this.state.contId}
+            onChangeText={(text) => this.updateTextInput(text, 'contId')}
           />
         </View>
         <View style={styles.subContainer}>
           <TextInput
-              placeholder={'Product Name'}
-              value={this.state.prodName}
-              onChangeText={(text) => this.updateTextInput(text, 'prodName')}
+            placeholder={'Nome do Contato'}
+            value={this.state.contName}
+            onChangeText={(text) => this.updateTextInput(text, 'contName')}
           />
         </View>
         <View style={styles.subContainer}>
           <TextInput
-              multiline={true}
-              numberOfLines={4}
-              placeholder={'Product Description'}
-              value={this.state.prodDesc}
-              onChangeText={(text) => this.updateTextInput(text, 'prodDesc')}
+            multiline={true}
+            numberOfLines={4}
+            placeholder={'Descrição do Contato'}
+            value={this.state.contDesc}
+            onChangeText={(text) => this.updateTextInput(text, 'contDesc')}
           />
         </View>
         <View style={styles.subContainer}>
           <TextInput
-              placeholder={'Product Image'}
-              value={this.state.prodImage}
-              onChangeText={(text) => this.updateTextInput(text, 'prodImage')}
+            placeholder={'Imagem do Contato'}
+            value={this.state.contImage}
+            onChangeText={(text) => this.updateTextInput(text, 'contImage')}
           />
         </View>
         <View style={styles.subContainer}>
           <TextInput
-              placeholder={'Product Price'}
-              value={this.state.prodPrice}
-              keyboardType='numeric'
-              onChangeText={(text) => this.updateTextInput(text, 'prodPrice')}
+            placeholder={'Numero'}
+            value={this.state.contNum}
+            keyboardType='numeric'
+            onChangeText={(text) => this.updateTextInput(text, 'contNum')}
           />
         </View>
         <View style={styles.button}>
           <Button
             large
-            leftIcon={{name: 'save'}}
-            title='Save'
-            onPress={() => this.saveProduct()} />
+            leftIcon={{ name: 'save' }}
+            title='Salvar'
+            onPress={() => this.saveContact()} />
         </View>
+
       </ScrollView>
     );
   }

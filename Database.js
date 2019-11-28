@@ -25,13 +25,13 @@ export default class Database {
                         .then(DB => {
                             db = DB;
                             console.log("Database OPEN");
-                            db.executeSql('SELECT 1 FROM Product LIMIT 1').then(() => {
+                            db.executeSql('SELECT 1 FROM Contact LIMIT 1').then(() => {
                                 console.log("Database is ready ... executing query ...");
                             }).catch((error) => {
                                 console.log("Received error: ", error);
                                 console.log("Database not yet ready ... populating data");
                                 db.transaction((tx) => {
-                                    tx.executeSql('CREATE TABLE IF NOT EXISTS Product (prodId, prodName, prodDesc, prodImage, prodPrice)');
+                                    tx.executeSql('CREATE TABLE IF NOT EXISTS Contact (contId, contName, contDesc, contImage, contNum)');
                                 }).then(() => {
                                     console.log("Table created successfully");
                                 }).catch(error => {
@@ -57,7 +57,7 @@ export default class Database {
                     console.log("Database CLOSED");
                 })
                 .catch(error => {
-                    this.errorCB(error);
+                    console.log("Cheguei aqui",error);
                 });
         } else {
             console.log("Database was not OPENED");
@@ -66,26 +66,26 @@ export default class Database {
 
 
 
-    listProduct() {
+    listContacts() {
         return new Promise((resolve) => {
-            const products = [];
+            const contacts = [];
             this.initDB().then((db) => {
                 db.transaction((tx) => {
-                    tx.executeSql('SELECT p.prodId, p.prodName, p.prodImage FROM Product p', []).then(([tx, results]) => {
+                    tx.executeSql('SELECT c.contId, c.contName, c.contImage FROM Contact c', []).then(([tx, results]) => {
                         console.log("Query completed");
                         var len = results.rows.length;
                         for (let i = 0; i < len; i++) {
                             let row = results.rows.item(i);
-                            console.log(`Prod ID: ${row.prodId}, Prod Name: ${row.prodName}`)
-                            const { prodId, prodName, prodImage } = row;
-                            products.push({
-                                prodId,
-                                prodName,
-                                prodImage
+                            console.log(`Cont ID: ${row.contId}, Cont Name: ${row.contName}`)
+                            const { contId, contName, contImage } = row;
+                            contacts.push({
+                                contId,
+                                contName,
+                                contImage
                             });
                         }
-                        console.log(products);
-                        resolve(products);
+                        console.log(contacts);
+                        resolve(contacts);
                     });
                 }).then((result) => {
                     this.closeDatabase(db);
@@ -98,31 +98,32 @@ export default class Database {
         });
     }
 
-    addProduct(prod) {
+    addContact(cont) {
+        console.log(cont);
         return new Promise((resolve) => {
-          this.initDB().then((db) => {
-            db.transaction((tx) => {
-              tx.executeSql('INSERT INTO Product VALUES (?, ?, ?, ?, ?)', [prod.prodId, prod.prodName, prod.prodDesc, prod.prodImage, prod.prodPrice]).then(([tx, results]) => {
-                resolve(results);
-              });
-            }).then((result) => {
-              this.closeDatabase(db);
+            this.initDB().then((db) => {
+                db.transaction((tx) => {
+                    tx.executeSql('INSERT INTO Contact VALUES (?, ?, ?, ?, ?)', [cont.contId, cont.contName, cont.contDesc, cont.contImage, cont.contNum]).then(([tx, results]) => {
+                        resolve(results);
+                    });
+                }).then((result) => {
+                    this.closeDatabase(db);
+                }).catch((err) => {
+                    console.log('Aqui',err);
+                });
             }).catch((err) => {
-              console.log(err);
+                console.log(err);
             });
-          }).catch((err) => {
-            console.log(err);
-          });
-        });  
-      }
+        });
+    }
 
 
-    productById(id) {
+    contactById(id) {
         console.log(id);
         return new Promise((resolve) => {
             this.initDB().then((db) => {
                 db.transaction((tx) => {
-                    tx.executeSql('SELECT * FROM Product WHERE prodId = ?', [id]).then(([tx, results]) => {
+                    tx.executeSql('SELECT * FROM Contact WHERE contId = ?', [id]).then(([tx, results]) => {
                         console.log(results);
                         if (results.rows.length > 0) {
                             let row = results.rows.item(0);
@@ -139,19 +140,43 @@ export default class Database {
             });
         });
     }
-    deleteProduct(id) {
-        const { navigation } = this.props;
-        this.setState({
-            isLoading: true
-        });
-        db.deleteProduct(id).then((result) => {
-            console.log(result);
-            this.props.navigation.goBack();
-        }).catch((err) => {
+
+    updateContact(id, cont) {
+        return new Promise((resolve) => {
+          this.initDB().then((db) => {
+            db.transaction((tx) => {
+              tx.executeSql('UPDATE Contact SET contName = ?, contDesc = ?, contImage = ?, contNum = ? WHERE contId = ?', [cont.contName, cont.contDesc, cont.contImage, cont.contNum, id]).then(([tx, results]) => {
+                resolve(results);
+              });
+            }).then((result) => {
+              this.closeDatabase(db);
+            }).catch((err) => {
+              console.log(err);
+            });
+          }).catch((err) => {
             console.log(err);
-            this.setState = {
-                isLoading: false
-            }
-        })
+          });
+        });  
+      }
+
+      
+    deleteContact(id) {
+        return new Promise((resolve) => {
+            this.initDB()
+                .then((db) => {
+                db.transaction((tx) => {
+                    tx.executeSql('DELETE FROM Contact WHERE contId = ?', [id]).then(([tx, results]) => {
+                        console.log(results);
+                        resolve(results);
+                    });
+                }).then((result) => {
+                    this.closeDatabase(db);
+                }).catch((err) => {
+                    console.log(err);
+                });
+            }).catch((err) => {
+                console.log(err);
+            });
+        });
     }
 }

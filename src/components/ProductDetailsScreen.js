@@ -5,16 +5,16 @@ import Database from '../../Database';
 
 const db = new Database();
 
-export default class ProductDetailsScreen extends Component {
+export default class ContactDetailsScreen extends Component {
   static navigationOptions = {
-    title: 'Product Details',
+    title: 'Detalhes do Contato',
   };
 
   constructor() {
     super();
     this.state = {
       isLoading: true,
-      product: {},
+      contact: {},
       id: '',
     };
   }
@@ -22,13 +22,13 @@ export default class ProductDetailsScreen extends Component {
   componentDidMount() {
     this.props.navigation.addListener('didFocus', () => {
       const { navigation } = this.props;
-      db.productById(navigation.getParam('prodId')).then((data) => {
+      db.contactById(navigation.getParam('contId')).then((data) => {
         console.log(data);
-        product = data;
+        contact = data;
         this.setState({
-          product,
+          contact,
           isLoading: false,
-          id: product.prodId
+          id: contact.contId
         });
       }).catch((err) => {
         console.log(err);
@@ -40,14 +40,13 @@ export default class ProductDetailsScreen extends Component {
   }
 
 
-  deleteProduct(id) {
-    const { navigation } = this.props;
+  deleteContact(id) {
     this.setState({
       isLoading: true
     });
-    db.deleteProduct(id).then((result) => {
+    db.deleteContact(id).then((result) => {
       console.log(result);
-      navigation.goBack();
+      this.props.navigation.goBack();
     }).catch((err) => {
       console.log(err);
       this.setState = {
@@ -71,20 +70,20 @@ export default class ProductDetailsScreen extends Component {
             <View>
               <Image
                 style={{width: 150, height: 150}}
-                source={{uri: this.state.product.prodImage}}
+                source={{uri: this.state.contact.contImage}}
               />
             </View>
             <View>
-              <Text style={{fontSize: 16}}>Product ID: {this.state.product.prodId}</Text>
+              <Text style={{fontSize: 16}}>Contact ID: {this.state.contact.contId}</Text>
             </View>
             <View>
-              <Text style={{fontSize: 16}}>Product Name: {this.state.product.prodName}</Text>
+              <Text style={{fontSize: 16}}>Contact Name: {this.state.contact.contName}</Text>
             </View>
             <View>
-              <Text style={{fontSize: 16}}>Product Desc: {this.state.product.prodDesc}</Text>
+              <Text style={{fontSize: 16}}>Contact Desc: {this.state.contact.contDesc}</Text>
             </View>
             <View>
-              <Text style={{fontSize: 16}}>Product Price: {this.state.product.prodPrice}</Text>
+              <Text style={{fontSize: 16}}>Contact Num: {this.state.contact.contNum}</Text>
             </View>
           </View>
           <View style={styles.detailButton}>
@@ -92,10 +91,10 @@ export default class ProductDetailsScreen extends Component {
               large
               backgroundColor={'#CCCCCC'}
               leftIcon={{name: 'edit'}}
-              title='Edit'
+              title='Editar'
               onPress={() => {
                 this.props.navigation.navigate('EditProduct', {
-                  prodId: `${this.state.id}`,
+                  contId: `${this.state.id}`,
                 });
               }} />
           </View>
@@ -106,7 +105,7 @@ export default class ProductDetailsScreen extends Component {
               color={'#FFFFFF'}
               leftIcon={{name: 'delete'}}
               title='Delete'
-              onPress={() => this.deleteProduct(this.state.id)} />
+              onPress={() => this.deleteContact(this.state.id)} />
           </View>
         </Card>
       </ScrollView>

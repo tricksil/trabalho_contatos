@@ -5,34 +5,34 @@ import Database from '../../Database';
 
 const db = new Database();
 
-export default class ProductEditScreen extends Component {
+export default class ContactEditScreen extends Component {
   static navigationOptions = {
-    title: 'Edit Product',
+    title: 'Editar Contato',
   };
 
   constructor() {
     super();
     this.state = {
-      prodId: '',
-      prodName: '',
-      prodDesc: '',
-      prodImage: '',
-      prodPrice: '0',
+      contId: '',
+      contName: '',
+      contDesc: '',
+      contImage: '',
+      contNum: '',
       isLoading: true,
     };
   }
 
   componentDidMount() {
     const { navigation } = this.props;
-    db.productById(navigation.getParam('prodId')).then((data) => {
+    db.contactById(navigation.getParam('contId')).then((data) => {
       console.log(data);
-      const product = data;
+      const contact = data;
       this.setState({
-        prodId: product.prodId,
-        prodName: product.prodName,
-        prodDesc: product.prodDesc,
-        prodImage: product.prodImage,
-        prodPrice: product.prodPrice,
+        contId: contact.contId,
+        contName: contact.contName,
+        contDesc: contact.contDesc,
+        contImage: contact.contImage,
+        contNum: contact.contNum,
         isLoading: false,
       });
     }).catch((err) => {
@@ -43,19 +43,25 @@ export default class ProductEditScreen extends Component {
     })
   }
 
-  updateProduct() {
+  updateTextInput = (text, field) => {
+    const state = this.state
+    state[field] = text;
+    this.setState(state);
+  }
+
+  updateContact() {
     this.setState({
       isLoading: true,
     });
     const { navigation } = this.props;
     let data = {
-      prodId: this.state.prodId,
-      prodName: this.state.prodName,
-      prodDesc: this.state.prodDesc,
-      prodImage: this.state.prodImage,
-      prodPrice: this.state.prodPrice
+      contId: this.state.contId,
+      contName: this.state.contName,
+      contDesc: this.state.contDesc,
+      contImage: this.state.contImage,
+      contNum: this.state.contNum
     }
-    db.updateProduct(data.prodId, data).then((result) => {
+    db.updateContact(data.contId, data).then((result) => {
       console.log(result);
       this.setState({
         isLoading: false,
@@ -70,11 +76,6 @@ export default class ProductEditScreen extends Component {
     })
   }
 
-  updateTextInput = (text, field) => {
-    const state = this.state
-    state[field] = text;
-    this.setState(state);
-  }
 
   render() {
     if(this.state.isLoading){
@@ -88,52 +89,52 @@ export default class ProductEditScreen extends Component {
       <ScrollView style={styles.container}>
         <View style={styles.subContainer}>
           <TextInput
-              placeholder={'Product ID'}
-              value={this.state.prodId}
-              onChangeText={(text) => this.updateTextInput(text, 'prodId')}
+              placeholder={'ID do Contato'}
+              value={this.state.contId}
+              onChangeText={(text) => this.updateTextInput(text, 'contId')}
           />
         </View>
         <View style={styles.subContainer}>
           <TextInput
-              placeholder={'Product Name'}
-              value={this.state.prodName}
-              onChangeText={(text) => this.updateTextInput(text, 'prodName')}
+              placeholder={'Nome do Contato'}
+              value={this.state.contName}
+              onChangeText={(text) => this.updateTextInput(text, 'contName')}
           />
         </View>
         <View style={styles.subContainer}>
           <TextInput
               multiline={true}
               numberOfLines={4}
-              placeholder={'Product Description'}
-              value={this.state.prodDesc}
-              onChangeText={(text) => this.updateTextInput(text, 'prodDesc')}
+              placeholder={'Descrição do Contato'}
+              value={this.state.contDesc}
+              onChangeText={(text) => this.updateTextInput(text, 'contDesc')}
           />
         </View>
         <View style={styles.subContainer}>
           <TextInput
-              placeholder={'Product Image'}
-              value={this.state.prodImage}
-              onChangeText={(text) => this.updateTextInput(text, 'prodImage')}
+              placeholder={'Imagem do Contato'}
+              value={this.state.contImage}
+              onChangeText={(text) => this.updateTextInput(text, 'contImage')}
           />
         </View>
         <View style={styles.subContainer}>
           <TextInput
-              placeholder={'Product Price'}
-              value={this.state.prodPrice}
+              placeholder={'Preço do Contato'}
+              value={this.state.contNum}
               keyboardType='numeric'
-              onChangeText={(text) => this.updateTextInput(text, 'prodPrice')}
+              onChangeText={(text) => this.updateTextInput(text, 'contNum')}
           />
         </View>
         <View style={styles.button}>
           <Button
             large
             leftIcon={{name: 'save'}}
-            title='Save'
-            onPress={() => this.updateProduct()} />
+            title='Salve'
+            onPress={() => this.updateContact()} />
         </View>
       </ScrollView>
     );
-  } 
+  }
 }
 
 const styles = StyleSheet.create({

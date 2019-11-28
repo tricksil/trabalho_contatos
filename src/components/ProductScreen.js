@@ -6,10 +6,10 @@ import Database from '../../Database';
 
 const db = new Database();
 
-export default class ProductScreen extends Component {
+export default class ContactScreen extends Component {
 	static navigationOptions = ({ navigation }) => {
 		return {
-			title: 'Product List',
+			title: 'Lista de Contatos',
 			headerRight: (
 				<Button
 					buttonStyle={{ padding: 0, backgroundColor: 'transparent' }}
@@ -28,25 +28,25 @@ export default class ProductScreen extends Component {
 		super(props);
 		this.state = {
 			isLoading: true,
-			products: [],
-			notFound: 'Products not found.\nPlease click (+) button to add it.'
+			contacts: [],
+			notFound: 'Nem um Contato cadastrado \nClick no (+) Para adicionar.'
 		};
 	}
 
 	keyExtractor = (item, index) => index.toString();
 
 	componentDidMount() {
-		this.props.navigation.addListener('didFocus', () => {
-			this.getProducts();
+		this.props.navigation.addListener('didFocus', async () => {
+			await this.getContacts();
 		});
 	}
 
-	getProducts() {
-		let products = [];
-		db.listProduct().then((data) => {
-			products = data;
+	getContacts() {
+		let contacts = [];
+		db.listContacts().then((data) => {
+			contacts = data;
 			this.setState({
-				products,
+				contacts,
 				isLoading: false,
 			});
 		}).catch((err) => {
@@ -59,14 +59,14 @@ export default class ProductScreen extends Component {
 
 	renderItem = ({ item }) => (
 		<ListItem
-			title={item.prodName}
+			title={item.contName}
 			leftAvatar={{
-				source: item.prodImage && { uri: item.prodImage },
-				title: item.prodName[0]
+				source: item.contImage && { uri: item.contImage } ,
+				title: item.contName[0]
 			}}
 			onPress={() => {
 				this.props.navigation.navigate('ProductDetails', {
-					prodId: `${item.prodId}`,
+					contId: `${item.contId}`,
 				});
 			}}
 			chevron
@@ -83,7 +83,7 @@ export default class ProductScreen extends Component {
 				</View>
 			)
 		}
-		if (this.state.products.length === 0) {
+		if (this.state.contacts.length === 0) {
 			return (
 				<View>
 					<Text style={styles.message}>{this.state.notFound}</Text>
@@ -93,7 +93,7 @@ export default class ProductScreen extends Component {
 		return (
 			<FlatList
 				keyExtractor={this.keyExtractor}
-				data={this.state.products}
+				data={this.state.contacts}
 				renderItem={this.renderItem}
 			/>
 		);
